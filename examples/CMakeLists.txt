@@ -7,5 +7,5 @@ add_example(clock)
 
 if(ENABLE_WAMR_EXTENSION)
     add_example(tcp_client)
-    add_example(tcp_echo_server)
+    # TODO uncomment once bind is implemented in wasi libc add_example(tcp_echo_server)
 endif()

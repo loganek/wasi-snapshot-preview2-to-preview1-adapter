@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - "*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install dependencies
+        run: |
+          sudo apt update && sudo apt install -y cmake clang llvm
+          git clone https://github.com/dicej/wasi-libc.git
+          cd wasi-libc
+          git checkout wasi-sockets-basic-client
+          make -j 4 WASI_SNAPSHOT=preview2
+
+      - name: Build the project
+        run: |
+          ./build.sh $(pwd)/wasi-libc/sysroot
