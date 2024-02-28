@@ -1,10 +1,16 @@
 cmake_minimum_required(VERSION 3.12)
-project(wasi-preview2-to-preview1-adapter)
+project(wasi-preview2-to-preview1-adapter LANGUAGES C)
 
-set(WASI_SDK_DIR "/opt/wasi-sdk" CACHE STRING "WASI SDK install directory")
+add_compile_options(-Wall -Wextra -Wpedantic)
 
-include(compile-wasm.cmake)
+option(ENABLE_WAMR_EXTENSION "Enable WAMR extension adapter" ON)
+option(ENABLE_WAMR_RUNTIME "Build WAMR runtime (required to run some of the tests)" ON)
+set(WAMR_ROOT_DIR "${CMAKE_SOURCE_DIR}/ext/wasm-micro-runtime" CACHE STRING "")
 
 add_subdirectory(wsp2_to_wsp1_adapter)
-add_subdirectory(mini_wasi_libc)
-add_subdirectory(example_app)
+
+if(ENABLE_WAMR_RUNTIME)
+    add_subdirectory(runtime)
+endif()
+
+add_subdirectory(examples)

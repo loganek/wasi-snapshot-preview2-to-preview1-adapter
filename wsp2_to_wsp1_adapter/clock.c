@@ -1,9 +1,4 @@
-// wsp2 to wsp1 adapter
-
-#include <mini_wasi_libc.h>
-
-#define __WASI_CLOCKID_REALTIME 0U
-#define __WASI_CLOCKID_MONOTONIC 1U
+#include <wasi/api.h>
 
 int32_t __imported_wasi_snapshot_preview1_clock_time_get(int32_t arg0, int64_t arg1, int32_t arg2) __attribute__((
     __import_module__("wasi_snapshot_preview1"),
