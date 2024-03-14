@@ -1,5 +1,7 @@
 add_library(wsp2_to_wsp1_adapter
     clock.c
+    exit.c
+    random.c
     badfd.c)
 
 if(ENABLE_WAMR_EXTENSION)

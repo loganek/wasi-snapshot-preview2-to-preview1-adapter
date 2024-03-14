@@ -5,32 +5,13 @@
 #include <assert.h>
 
 #include "../preview2.h"
+#include "../wsp2_utils.h"
 
 #undef __wasi__
 #include <wasi_socket_ext.h>
 #define __wasi__
 
 #include <wasi/api.h>
-
-#define WSP2_OFFSET(d_type, ptr, offset) (*((d_type *)(((uint8_t *)(ptr)) + (offset))))
-#define WSP2_I32_OFFSET(ptr, offset) WSP2_OFFSET(int32_t, ptr, offset)
-#define WSP2_I64_OFFSET(ptr, offset) WSP2_OFFSET(int64_t, ptr, offset)
-#define WSP2_SET_OK(ptr)             \
-    do                               \
-    {                                \
-        WSP2_I32_OFFSET(ptr, 0) = 0; \
-    } while (0)
-#define WSP2_SET_ERR(ptr)            \
-    do                               \
-    {                                \
-        WSP2_I32_OFFSET(ptr, 0) = 0; \
-    } while (0)
-#define WSP2_SET_NETWORK_ERR(ptr, code) \
-    do                                  \
-    {                                   \
-        WSP2_SET_ERR(ptr);              \
-        WSP2_I32_OFFSET(ptr, 4) = code; \
-    } while (0)
 
 static int init_wasi_addr(__wasi_addr_t *addr, int32_t variant, int32_t variant1, int32_t variant2, int32_t variant3, int32_t variant4, int32_t variant5, int32_t variant6, int32_t variant7, int32_t variant8, int32_t variant9, int32_t variant10, int32_t variant11)
 {
@@ -173,7 +154,7 @@ void __wasm_import_streams_method_input_stream_read(int32_t handle, int64_t len,
     if (error == 0)
     {
         WSP2_SET_OK(ret_area);
-        WSP2_I32_OFFSET(ret_area, 4) = (int32_t)buf;
+        WSP2_PTR_OFFSET(ret_area, 4) = (intptr_t)buf;
         WSP2_I64_OFFSET(ret_area, 8) = (int64_t)data_len;
     }
     else
