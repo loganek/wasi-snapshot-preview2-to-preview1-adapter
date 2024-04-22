@@ -1,1 +1,4 @@
+.vscode/
 build/
+wasi-sdk-*-linux.tar.gz
+wasi-sdk-*/

@@ -56,6 +56,7 @@ int main(int argc, char**argv)
         ret = -4;
         goto finish;
     }
+
     memset(buf, 0, sizeof(buf));
     if (recv(sockfd, buf, sizeof(buf), 0) <  0) {
         perror("Failed to receive data from server");

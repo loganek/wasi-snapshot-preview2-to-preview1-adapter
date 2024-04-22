@@ -6,6 +6,7 @@
 
 #include "../preview2.h"
 #include "../wsp2_utils.h"
+#include "../allocator.h"
 
 #undef __wasi__
 #include <wasi_socket_ext.h>
@@ -85,7 +86,6 @@ extern void __wasm_import_tcp_method_tcp_socket_start_connect(int32_t self, int3
 {
     __wasi_addr_t addr;
     __wasi_errno_t error;
-
     (void)network_handle; // unused
 
     if (init_wasi_addr(&addr, variant, variant1, variant2, variant3, variant4, variant5, variant6, variant7, variant8, variant9, variant10, variant11))
@@ -146,9 +146,12 @@ void __wasm_import_streams_method_input_stream_read(int32_t handle, int64_t len,
     __wasi_size_t data_len;
     __wasi_roflags_t out_flags;
     __wasi_errno_t error;
-    void *buf = malloc(len);
+    void *buf = cabi_realloc(NULL, 0, 1, len);
     __wasi_iovec_t iov = {.buf = (uint8_t *)buf, .buf_len = len};
 
+    // A very simplistic implementation of the input stream read that assumes
+    // the handle is a socket. In a real implementation, we'll have to check the
+    // type of the handle and use different methods based on the type.
     error = __wasi_sock_recv(handle, &iov, 1, 0, &data_len, &out_flags);
 
     if (error == 0)
@@ -173,6 +176,9 @@ void __wasm_import_streams_method_output_stream_write(int32_t handle, uint8_t *b
 
     // TODO loop until full buffer is sent
     __wasi_size_t out;
+    // A very simplistic implementation of the output stream write that assumes
+    // the handle is a socket. In a real implementation, we'll have to check the
+    // type of the handle and use different methods based on the type.
     error = __wasi_sock_send(handle, &iov, si_data_len, si_flags, &out);
 
     if (error == 0)
